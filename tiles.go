@@ -88,7 +88,8 @@ func TileRect(t tiles.Tile) pixel.Rect {
 
 func DrawTile(tg pixel.Target, t tiles.Tile, pic *pixel.PictureData) {
 	s := pixel.NewSprite(pic, pic.Bounds())
-	s.Draw(tg, pixel.IM.Moved(TileVec(t)))
+	m := float64(tiles.TileSize) / 2
+	s.Draw(tg, pixel.IM.Moved(TileVec(t).Add(pixel.V(m, m))))
 }
 
 func DrawRect(tg pixel.Target, r pixel.Rect) {
@@ -132,18 +133,21 @@ func run() error {
 		return err
 	}
 
-	camera := pixel.IM.Moved(pixel.ZV.Sub(origin).Add(pixel.V(100, 100)))
-	win.SetMatrix(camera)
+	camera := pixel.ZV.Sub(origin).Add(pixel.V(400, 600))
+	win.SetMatrix(pixel.IM.Moved(camera))
 
+	fmt.Println("Camera", camera)
 	fmt.Println("Origin", origin)
 	fmt.Println("TileVec", TileVec(tile))
+	fmt.Println("Diff", origin.Sub(TileVec(tile)))
 
 	win.Clear(colornames.Skyblue)
 
 	DrawTile(win, tile, pic)
 	DrawRect(win, pixel.R(0, 0, 400, 400).Moved(origin))
 	DrawVec(win, origin)
-	DrawVec(win, origin.Add(pixel.V(0, 100)))
+	DrawVec(win, TileVec(tile))
+	DrawRect(win, pixel.R(0, 0, 256, 256).Moved(TileVec(tile)))
 
 	for !win.Closed() {
 		win.Update()
