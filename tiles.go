@@ -112,7 +112,7 @@ func Fill(r pixel.Rect, zoom int) []tiles.Tile {
 		tt  []tiles.Tile
 	)
 	for x := min.X; x <= max.X; x++ {
-		for y := min.Y; y <= max.Y; y++ {
+		for y := max.Y; y <= min.Y; y++ {
 			tt = append(tt, tiles.Tile{
 				X: x,
 				Y: y,
