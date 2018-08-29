@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "image/png"
 	"log"
 
 	"github.com/faiface/pixel"
