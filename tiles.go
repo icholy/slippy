@@ -11,6 +11,7 @@ import (
 
 	"github.com/buckhx/tiles"
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
@@ -21,6 +22,7 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 		"http://%[1]s.tile.openstreetmap.org/%[2]d/%[3]d/%[4]d.png",
 		shards[rand.Intn(len(shards))], t.Z, t.X, t.Y,
 	)
+	fmt.Println("URL", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -42,9 +44,18 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 }
 
 // CoordinateVec return the vector for the specified WGS84 coordiantes
-func CoordinateVec(latitude, longitude float64, zoom int) pixel.Vec {
-	c := tiles.FromCoordinate(latitude, longitude, zoom)
-	return PixelVec(c.ToPixel())
+func CoordinateVec(c tiles.Coordinate, zoom int) pixel.Vec {
+	return PixelVec(c.ToPixel(zoom))
+}
+
+func VecTile(v pixel.Vec, zoom int) tiles.Tile {
+	p := tiles.Pixel{
+		X: int(v.X),
+		Y: int(v.Y),
+		Z: zoom,
+	}
+	t, _ := p.ToTile()
+	return t
 }
 
 func PixelVec(p tiles.Pixel) pixel.Vec {
@@ -75,6 +86,32 @@ func TileRect(t tiles.Tile) pixel.Rect {
 	)
 }
 
+func DrawTile(tg pixel.Target, t tiles.Tile, pic *pixel.PictureData) {
+	s := pixel.NewSprite(pic, pic.Bounds())
+	s.Draw(tg, pixel.IM.Moved(TileVec(t)))
+}
+
+func DrawRect(tg pixel.Target, r pixel.Rect) {
+	m := imdraw.New(nil)
+	m.Color = colornames.Black
+	m.Push(
+		r.Min,
+		pixel.V(r.Max.X, r.Min.Y),
+		r.Max,
+		pixel.V(r.Min.X, r.Max.Y),
+	)
+	m.Polygon(5)
+	m.Draw(tg)
+}
+
+func DrawVec(tg pixel.Target, v pixel.Vec) {
+	m := imdraw.New(nil)
+	m.Color = colornames.Blue
+	m.Push(v)
+	m.Circle(10, 5)
+	m.Draw(tg)
+}
+
 func run() error {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Pixel Rocks!",
@@ -86,12 +123,31 @@ func run() error {
 		return err
 	}
 
+	zoom := 10
+	coord := tiles.ClippedCoords(43.174366, -79.231511)
+	origin := CoordinateVec(coord, zoom)
+	tile := VecTile(origin, zoom)
+	pic, err := TilePictureData(tile)
+	if err != nil {
+		return err
+	}
+
+	camera := pixel.IM.Moved(pixel.ZV.Sub(origin).Add(pixel.V(100, 100)))
+	win.SetMatrix(camera)
+
+	fmt.Println("Origin", origin)
+	fmt.Println("TileVec", TileVec(tile))
+
 	win.Clear(colornames.Skyblue)
+
+	DrawTile(win, tile, pic)
+	DrawRect(win, pixel.R(0, 0, 400, 400).Moved(origin))
+	DrawVec(win, origin)
+	DrawVec(win, origin.Add(pixel.V(0, 100)))
 
 	for !win.Closed() {
 		win.Update()
 	}
-
 	return nil
 }
 
@@ -101,4 +157,5 @@ func main() {
 			log.Fatal(err)
 		}
 	})
+
 }
