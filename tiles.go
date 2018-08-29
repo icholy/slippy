@@ -51,7 +51,7 @@ func CoordinateVec(c tiles.Coordinate, zoom int) pixel.Vec {
 func VecTile(v pixel.Vec, zoom int) tiles.Tile {
 	p := tiles.Pixel{
 		X: int(v.X),
-		Y: int(v.Y),
+		Y: -int(v.Y),
 		Z: zoom,
 	}
 	t, _ := p.ToTile()
@@ -61,7 +61,7 @@ func VecTile(v pixel.Vec, zoom int) tiles.Tile {
 func PixelVec(p tiles.Pixel) pixel.Vec {
 	return pixel.V(
 		float64(p.X),
-		float64(p.Y),
+		-float64(p.Y),
 	)
 }
 
@@ -71,7 +71,7 @@ func TileVec(t tiles.Tile) pixel.Vec {
 	p := t.ToPixel()
 	return PixelVec(tiles.Pixel{
 		X: p.X,
-		Y: p.Y - tiles.TileSize,
+		Y: p.Y + tiles.TileSize,
 	})
 }
 
@@ -105,6 +105,24 @@ func DrawRect(tg pixel.Target, r pixel.Rect) {
 	m.Draw(tg)
 }
 
+func Fill(r pixel.Rect, zoom int) []tiles.Tile {
+	var (
+		min = VecTile(r.Min, zoom)
+		max = VecTile(r.Max, zoom)
+		tt  []tiles.Tile
+	)
+	for x := min.X; x <= max.X; x++ {
+		for y := min.Y; y <= max.Y; y++ {
+			tt = append(tt, tiles.Tile{
+				X: x,
+				Y: y,
+				Z: zoom,
+			})
+		}
+	}
+	return tt
+}
+
 func DrawVec(tg pixel.Target, v pixel.Vec) {
 	m := imdraw.New(nil)
 	m.Color = colornames.Blue
@@ -133,7 +151,7 @@ func run() error {
 		return err
 	}
 
-	camera := pixel.ZV.Sub(origin).Add(pixel.V(400, 600))
+	camera := pixel.ZV.Sub(origin).Add(pixel.V(100, 100))
 	win.SetMatrix(pixel.IM.Moved(camera))
 
 	fmt.Println("Camera", camera)
