@@ -1,18 +1,17 @@
-package main
+package tiles
 
 import (
 	"errors"
 	"fmt"
 	"image"
+	"image/color"
 	_ "image/png"
-	"log"
 	"math/rand"
 	"net/http"
 
 	"github.com/buckhx/tiles"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
-	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
 
@@ -43,17 +42,26 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 }
 
 // CoordinateVec return the vector for the specified WGS84 coordiantes
-func CoordinateVec(c tiles.Coordinate, zoom int) pixel.Vec {
+func Vec(lat, lon float64, zoom int) pixel.Vec {
+	c := tiles.ClippedCoords(lat, lon)
 	return PixelVec(c.ToPixel(zoom))
 }
 
-func VecTile(v pixel.Vec, zoom int) tiles.Tile {
-	p := tiles.Pixel{
+func Coordinate(v pixel.Vec, zoom int) (lat, lon float64) {
+	c := VecPixel(v, zoom).ToCoords()
+	return c.Lat, c.Lon
+}
+
+func VecPixel(v pixel.Vec, zoom int) tiles.Pixel {
+	return tiles.Pixel{
 		X: int(v.X),
 		Y: -int(v.Y),
 		Z: zoom,
 	}
-	t, _ := p.ToTile()
+}
+
+func VecTile(v pixel.Vec, zoom int) tiles.Tile {
+	t, _ := VecPixel(v, zoom).ToTile()
 	return t
 }
 
@@ -91,16 +99,16 @@ func DrawTile(tg pixel.Target, t tiles.Tile, s *pixel.Sprite) {
 	s.Draw(tg, pixel.IM.Moved(v))
 }
 
-func DrawRect(tg pixel.Target, r pixel.Rect) {
+func DrawRect(tg pixel.Target, r pixel.Rect, c color.Color) {
 	m := imdraw.New(nil)
-	m.Color = colornames.Black
+	m.Color = c
 	m.Push(
 		r.Min,
 		pixel.V(r.Max.X, r.Min.Y),
 		r.Max,
 		pixel.V(r.Min.X, r.Max.Y),
 	)
-	m.Polygon(5)
+	m.Polygon(1)
 	m.Draw(tg)
 }
 
@@ -168,51 +176,4 @@ func loadTiles(r pixel.Rect, zoom int) ([]Tile, error) {
 		tt = append(tt, t)
 	}
 	return tt, nil
-}
-
-func run() error {
-	cfg := pixelgl.WindowConfig{
-		Title:  "Pixel Rocks!",
-		Bounds: pixel.R(0, 0, 1024, 768),
-		VSync:  true,
-	}
-	win, err := pixelgl.NewWindow(cfg)
-	if err != nil {
-		return err
-	}
-
-	zoom := 10
-	coord := tiles.ClippedCoords(43.174366, -79.231511)
-	origin := CoordinateVec(coord, zoom)
-	frame := pixel.R(0, 0, 400, 400).Moved(origin)
-
-	tiles, err := loadTiles(frame, zoom)
-	if err != nil {
-		return err
-	}
-
-	camera := pixel.ZV.Sub(origin).Add(pixel.V(100, 100))
-	win.SetMatrix(pixel.IM.Moved(camera))
-
-	win.Clear(colornames.Skyblue)
-
-	for _, t := range tiles {
-		t.Draw(win)
-	}
-	DrawRect(win, frame)
-	DrawVec(win, origin)
-
-	for !win.Closed() {
-		win.Update()
-	}
-	return nil
-}
-
-func main() {
-	pixelgl.Run(func() {
-		if err := run(); err != nil {
-			log.Fatal(err)
-		}
-	})
-
 }
