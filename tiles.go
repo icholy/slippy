@@ -22,7 +22,6 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 		"http://%[1]s.tile.openstreetmap.org/%[2]d/%[3]d/%[4]d.png",
 		shards[rand.Intn(len(shards))], t.Z, t.X, t.Y,
 	)
-	fmt.Println("URL", url)
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -159,6 +158,18 @@ func (t Tile) Draw(tg pixel.Target) {
 	DrawTile(tg, t.Tile, t.Sprite)
 }
 
+func loadTiles(r pixel.Rect, zoom int) ([]Tile, error) {
+	var tt []Tile
+	for _, tile := range Fill(r, zoom) {
+		t, err := LoadTile(tile)
+		if err != nil {
+			return nil, err
+		}
+		tt = append(tt, t)
+	}
+	return tt, nil
+}
+
 func run() error {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Pixel Rocks!",
@@ -173,25 +184,23 @@ func run() error {
 	zoom := 10
 	coord := tiles.ClippedCoords(43.174366, -79.231511)
 	origin := CoordinateVec(coord, zoom)
+	frame := pixel.R(0, 0, 400, 400).Moved(origin)
 
-	t, err := LoadTile(VecTile(origin, zoom))
+	tiles, err := loadTiles(frame, zoom)
 	if err != nil {
 		return err
 	}
-
-	frame := pixel.R(0, 0, 400, 400).Moved(origin)
 
 	camera := pixel.ZV.Sub(origin).Add(pixel.V(100, 100))
 	win.SetMatrix(pixel.IM.Moved(camera))
 
 	win.Clear(colornames.Skyblue)
 
-	t.Draw(win)
-
+	for _, t := range tiles {
+		t.Draw(win)
+	}
 	DrawRect(win, frame)
 	DrawVec(win, origin)
-	DrawVec(win, t.Vec())
-	DrawRect(win, pixel.R(0, 0, 256, 256).Moved(t.Vec()))
 
 	for !win.Closed() {
 		win.Update()
