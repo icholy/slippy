@@ -1,4 +1,4 @@
-package slippy
+package convert
 
 import (
 	"github.com/buckhx/tiles"

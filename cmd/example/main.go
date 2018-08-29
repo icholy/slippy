@@ -8,13 +8,15 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 
-	"github.com/icholy/tiles"
+	"github.com/icholy/slippy"
+	"github.com/icholy/slippy/convert"
+	"github.com/icholy/slippy/util"
 )
 
-func loadTiles(r pixel.Rect, zoom int) ([]tiles.Tile, error) {
-	var tt []tiles.Tile
-	for _, tile := range tiles.Fill(r, zoom) {
-		t, err := tiles.LoadTile(tile)
+func loadTiles(r pixel.Rect, zoom int) ([]slippy.Tile, error) {
+	var tt []slippy.Tile
+	for _, tile := range convert.RectTiles(r, zoom) {
+		t, err := slippy.LoadTile(tile)
 		if err != nil {
 			return nil, err
 		}
@@ -36,7 +38,7 @@ func run() error {
 
 	zoom := 10
 
-	origin := tiles.Vec(43.174366, -79.231511, zoom)
+	origin := slippy.Vec(43.174366, -79.231511, zoom)
 	frame := pixel.R(0, 0, 450, 500).Moved(origin)
 
 	tt, err := loadTiles(frame, zoom)
@@ -51,11 +53,11 @@ func run() error {
 
 	for _, t := range tt {
 		t.Draw(win)
-		tiles.DrawRect(win, t.Rect(), colornames.Black)
+		util.DrawRect(win, t.Rect(), colornames.Black)
 	}
 
-	tiles.DrawRect(win, frame, colornames.Blue)
-	tiles.DrawVec(win, origin)
+	util.DrawRect(win, frame, colornames.Blue)
+	util.DrawVec(win, origin)
 
 	for !win.Closed() {
 		win.Update()
