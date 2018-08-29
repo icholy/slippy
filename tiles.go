@@ -86,10 +86,10 @@ func TileRect(t tiles.Tile) pixel.Rect {
 	)
 }
 
-func DrawTile(tg pixel.Target, t tiles.Tile, pic *pixel.PictureData) {
-	s := pixel.NewSprite(pic, pic.Bounds())
+func DrawTile(tg pixel.Target, t tiles.Tile, s *pixel.Sprite) {
 	m := float64(tiles.TileSize) / 2
-	s.Draw(tg, pixel.IM.Moved(TileVec(t).Add(pixel.V(m, m))))
+	v := TileVec(t).Add(pixel.V(m, m))
+	s.Draw(tg, pixel.IM.Moved(v))
 }
 
 func DrawRect(tg pixel.Target, r pixel.Rect) {
@@ -131,6 +131,34 @@ func DrawVec(tg pixel.Target, v pixel.Vec) {
 	m.Draw(tg)
 }
 
+type Tile struct {
+	Tile   tiles.Tile
+	Sprite *pixel.Sprite
+}
+
+func LoadTile(t tiles.Tile) (Tile, error) {
+	pic, err := TilePictureData(t)
+	if err != nil {
+		return Tile{}, err
+	}
+	return Tile{
+		Tile:   t,
+		Sprite: pixel.NewSprite(pic, pic.Bounds()),
+	}, nil
+}
+
+func (t Tile) Rect() pixel.Rect {
+	return TileRect(t.Tile)
+}
+
+func (t Tile) Vec() pixel.Vec {
+	return TileVec(t.Tile)
+}
+
+func (t Tile) Draw(tg pixel.Target) {
+	DrawTile(tg, t.Tile, t.Sprite)
+}
+
 func run() error {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Pixel Rocks!",
@@ -145,27 +173,25 @@ func run() error {
 	zoom := 10
 	coord := tiles.ClippedCoords(43.174366, -79.231511)
 	origin := CoordinateVec(coord, zoom)
-	tile := VecTile(origin, zoom)
-	pic, err := TilePictureData(tile)
+
+	t, err := LoadTile(VecTile(origin, zoom))
 	if err != nil {
 		return err
 	}
 
+	frame := pixel.R(0, 0, 400, 400).Moved(origin)
+
 	camera := pixel.ZV.Sub(origin).Add(pixel.V(100, 100))
 	win.SetMatrix(pixel.IM.Moved(camera))
 
-	fmt.Println("Camera", camera)
-	fmt.Println("Origin", origin)
-	fmt.Println("TileVec", TileVec(tile))
-	fmt.Println("Diff", origin.Sub(TileVec(tile)))
-
 	win.Clear(colornames.Skyblue)
 
-	DrawTile(win, tile, pic)
-	DrawRect(win, pixel.R(0, 0, 400, 400).Moved(origin))
+	t.Draw(win)
+
+	DrawRect(win, frame)
 	DrawVec(win, origin)
-	DrawVec(win, TileVec(tile))
-	DrawRect(win, pixel.R(0, 0, 256, 256).Moved(TileVec(tile)))
+	DrawVec(win, t.Vec())
+	DrawRect(win, pixel.R(0, 0, 256, 256).Moved(t.Vec()))
 
 	for !win.Closed() {
 		win.Update()
