@@ -39,11 +39,10 @@ func FromCoordinate(lat, lon float64, zoom int) Tile {
 
 // Vec returns a vector for the bottom left corner of the tile
 func (t Tile) Vec() pixel.Vec {
-	p := t.pixel()
-	return Pixel{
-		X: p.X,
-		Y: p.Y + TileSize,
-	}.Vec()
+	return pixel.V(
+		float64(t.X*TileSize),
+		-float64((t.Y*TileSize)+TileSize),
+	)
 }
 
 // Rect returns a rectangle of the tile

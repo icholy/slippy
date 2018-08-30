@@ -1,7 +1,6 @@
 package tiles
 
 import (
-	"fmt"
 	"testing"
 )
 
