@@ -37,7 +37,7 @@ func (t *ImageTile) Fetch() error {
 	return nil
 }
 
-func (t ImageTile) DrawVec() pixel.Vec {
+func (t ImageTile) Offset() pixel.Vec {
 	offset := t.Frame.Min
 	center := pixel.Vec{
 		X: t.Frame.W() / 2,
@@ -50,8 +50,8 @@ func (t ImageTile) Draw(tg pixel.Target, m pixel.Matrix) {
 	if t.Sprite == nil {
 		return
 	}
-	v := t.DrawVec()
-	t.Sprite.Draw(tg, pixel.IM.Moved(v).Chained(m))
+	offset := t.Offset()
+	t.Sprite.Draw(tg, pixel.IM.Moved(offset).Chained(m))
 }
 
 func NewImageTile(t Tile, bounds pixel.Rect) ImageTile {
