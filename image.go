@@ -18,6 +18,7 @@ type ImageTile struct {
 	Tile
 	Sprite *pixel.Sprite
 	Frame  pixel.Rect
+	Loaded bool
 }
 
 func (t *ImageTile) Fetch() error {
@@ -32,6 +33,7 @@ func (t *ImageTile) Fetch() error {
 	}
 	pic := pixel.PictureDataFromImage(img)
 	t.Sprite = pixel.NewSprite(pic, t.Frame)
+	t.Loaded = true
 	return nil
 }
 
