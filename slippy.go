@@ -30,7 +30,6 @@ type ImageTile struct {
 	tiles.Tile
 	Sprite *pixel.Sprite
 	Frame  pixel.Rect
-	Offset pixel.Vec
 }
 
 func URL(t tiles.Tile) string {
