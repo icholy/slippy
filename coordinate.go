@@ -1,4 +1,4 @@
-package tiles
+package slippy
 
 import (
 	"fmt"

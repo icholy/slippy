@@ -1,8 +1,12 @@
-package tiles
+package slippy
 
 import (
+	"errors"
 	"fmt"
+	"image"
+	_ "image/png"
 	"math"
+	"net/http"
 )
 
 // Earth Parameters
@@ -70,4 +74,27 @@ func check(errs ...error) {
 			panic(err)
 		}
 	}
+}
+
+const UserAgent = "Slippy/Go-Test"
+
+func FetchImage(url string) (image.Image, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", UserAgent)
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New(resp.Status)
+	}
+	img, _, err := image.Decode(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	return img, nil
 }
