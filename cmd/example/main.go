@@ -39,11 +39,9 @@ func run() error {
 	m.Draw(win, pixel.IM)
 
 	for !win.Closed() {
-
 		if win.JustPressed(pixelgl.MouseButtonLeft) {
 			fmt.Println("Clicked", m.Coord(win.MousePosition()))
 		}
-
 		win.Update()
 	}
 	return nil
