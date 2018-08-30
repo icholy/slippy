@@ -4,6 +4,8 @@
 package slippy
 
 import (
+	"fmt"
+
 	"github.com/faiface/pixel"
 )
 
@@ -12,20 +14,18 @@ type Tile struct {
 	X, Y, Z int
 }
 
-// FromVec converts a vec into a tile that contains that vec
-func FromVec(v pixel.Vec, zoom int) Tile {
+// String returns the string representation of the tile
+func (t Tile) String() string {
+	return fmt.Sprintf("Tile(%d, %d, %d)", t.X, t.Y, t.Z)
+}
+
+// fromVec converts a vec into a tile that contains that vec
+func fromVec(v pixel.Vec, zoom int) Tile {
 	return Tile{
 		X: int(v.X) / TileSize,
 		Y: (-int(v.Y)) / TileSize,
 		Z: zoom,
 	}
-}
-
-// FromLatLon take float lat/lons and a zoom and return a tile
-// Clips the coordinates if they are outside of Min/MaxLat/Lon
-func FromLatLon(lat, lon float64, zoom int) Tile {
-	c := ClippedCoords(lat, lon)
-	return FromVec(c.Vec(zoom), zoom)
 }
 
 // Vec returns a vector for the bottom left corner of the tile

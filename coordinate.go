@@ -27,13 +27,6 @@ func Vec(lat, lon float64, zoom int) pixel.Vec {
 	return ClippedCoords(lat, lon).Vec(zoom)
 }
 
-// Equals checks if these coords are equal avoiding some float precision
-func (c Coordinate) Equals(that Coordinate) bool {
-	eq := floatEquals(c.Lat, that.Lat)
-	eq = eq && floatEquals(c.Lon, that.Lon)
-	return eq
-}
-
 // Vec gets the vec of the coord at the zoom level
 func (c Coordinate) Vec(zoom int) pixel.Vec {
 	x := (c.Lon + 180) / 360.0
@@ -46,12 +39,14 @@ func (c Coordinate) Vec(zoom int) pixel.Vec {
 	)
 }
 
+// Tile returns the tile which contains the coordinate
 func (c Coordinate) Tile(zoom int) Tile {
-	return FromVec(c.Vec(zoom), zoom)
+	return fromVec(c.Vec(zoom), zoom)
 }
 
+// String returns a string representation of the coordinate
 func (c Coordinate) String() string {
-	return fmt.Sprintf("(%v, %v)", c.Lat, c.Lon)
+	return fmt.Sprintf("Coordinate(%v, %v)", c.Lat, c.Lon)
 }
 
 // ClippedCoords that have been clipped to Max/Min Lat/Lon

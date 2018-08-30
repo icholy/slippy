@@ -4,6 +4,7 @@ import "github.com/faiface/pixel"
 
 type Options struct {
 	Lat, Lon float64
+	Center   Coordinate
 	Zoom     int
 	Bounds   pixel.Rect
 }
@@ -24,7 +25,7 @@ func New(opts Options) *Map {
 		opts:   opts,
 		origin: origin,
 		area:   area,
-		tiles:  RectTiles(area, opts.Zoom),
+		tiles:  fromRect(area, opts.Zoom),
 	}
 }
 

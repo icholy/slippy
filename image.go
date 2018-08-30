@@ -20,16 +20,12 @@ type ImageTile struct {
 	Frame  pixel.Rect
 }
 
-func URL(t Tile) string {
+func (t *ImageTile) Fetch() error {
 	shards := []string{"a", "b", "c"}
-	return fmt.Sprintf(
+	url := fmt.Sprintf(
 		"http://%[1]s.tile.openstreetmap.org/%[2]d/%[3]d/%[4]d.png",
 		shards[rand.Intn(len(shards))], t.Z, t.X, t.Y,
 	)
-}
-
-func (t *ImageTile) Fetch() error {
-	url := URL(t.Tile)
 	img, err := FetchImage(url)
 	if err != nil {
 		return err
@@ -70,11 +66,11 @@ func NewImageTile(t Tile, bounds pixel.Rect) ImageTile {
 	}
 }
 
-// RectTiles returns a slice of tiles requires to fully cover the rect
-func RectTiles(bounds pixel.Rect, zoom int) []ImageTile {
+// fromRect returns a slice of tiles requires to fully cover the rect
+func fromRect(bounds pixel.Rect, zoom int) []ImageTile {
 	var (
-		min = FromVec(bounds.Min, zoom)
-		max = FromVec(bounds.Max, zoom)
+		min = fromVec(bounds.Min, zoom)
+		max = fromVec(bounds.Max, zoom)
 		tt  []ImageTile
 	)
 	for x := min.X; x <= max.X; x++ {
