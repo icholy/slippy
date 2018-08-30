@@ -2,16 +2,21 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"log"
+	"math/rand"
 
 	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
+	"golang.org/x/image/colornames"
 
 	"github.com/icholy/slippy"
 )
 
 func run() error {
-	// Create the window
+
+	// create the window
 	cfg := pixelgl.WindowConfig{
 		Title:  "OpenStreetMaps",
 		Bounds: pixel.R(0, 0, 1024, 768),
@@ -44,7 +49,9 @@ func run() error {
 	for !win.Closed() {
 		// print clicked location coordinates
 		if win.JustPressed(pixelgl.MouseButtonLeft) {
-			fmt.Println("Clicked", m.Coord(win.MousePosition()))
+			coord := m.Coord(win.MousePosition())
+			fmt.Println("Clicked", coord)
+			drawVec(win, m.Vec(coord))
 		}
 		win.Update()
 	}
@@ -57,5 +64,18 @@ func main() {
 			log.Fatal(err)
 		}
 	})
+}
 
+func drawVec(t pixel.Target, v pixel.Vec) {
+	imd := imdraw.New(nil)
+	imd.Color = randColor()
+	imd.Push(v)
+	imd.Circle(5, 2)
+	imd.Draw(t)
+}
+
+func randColor() color.Color {
+	names := colornames.Names
+	name := names[rand.Intn(len(names))]
+	return colornames.Map[name]
 }
