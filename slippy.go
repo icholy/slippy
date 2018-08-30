@@ -60,8 +60,8 @@ func (t Tile) Draw(tg pixel.Target) {
 
 func loadTiles(r pixel.Rect, zoom int) ([]Tile, error) {
 	var tt []Tile
-	for _, tile := range tiles.RectTiles(r, zoom) {
-		t, err := LoadTile(tile)
+	for _, tile := range RectTiles(r, zoom) {
+		t, err := LoadTile(tile.Tile)
 		if err != nil {
 			return nil, err
 		}

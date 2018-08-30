@@ -46,22 +46,3 @@ func (t Tile) Rect() pixel.Rect {
 		v.Y+float64(TileSize),
 	)
 }
-
-// RectTiles returns a slice of tiles requires to fully cover the rect
-func RectTiles(r pixel.Rect, zoom int) []Tile {
-	var (
-		min = FromVec(r.Min, zoom)
-		max = FromVec(r.Max, zoom)
-		tt  []Tile
-	)
-	for x := min.X; x <= max.X; x++ {
-		for y := max.Y; y <= min.Y; y++ {
-			tt = append(tt, Tile{
-				X: x,
-				Y: y,
-				Z: zoom,
-			})
-		}
-	}
-	return tt
-}
