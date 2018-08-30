@@ -17,8 +17,8 @@ func (c Coordinate) Equals(that Coordinate) bool {
 	return eq
 }
 
-// ToPixel gets the Pixel of the coord at the zoom level
-func (c Coordinate) ToPixel(zoom int) Pixel {
+// Pixel gets the Pixel of the coord at the zoom level
+func (c Coordinate) Pixel(zoom int) Pixel {
 	x := (c.Lon + 180) / 360.0
 	sinLat := math.Sin(c.Lat * math.Pi / 180.0)
 	y := 0.5 - math.Log((1+sinLat)/(1-sinLat))/(4*math.Pi)

@@ -7,7 +7,7 @@ import (
 	"github.com/icholy/slippy/tiles"
 )
 
-func TestTileToPixel(t *testing.T) {
+func TestTilePixel(t *testing.T) {
 	tileTests := []struct {
 		tile  tiles.Tile
 		pixel tiles.Pixel
@@ -17,7 +17,7 @@ func TestTileToPixel(t *testing.T) {
 	}
 	errf := "Tile%+v: %+v -> %+v"
 	for _, test := range tileTests {
-		pixel := test.tile.ToPixel()
+		pixel := test.tile.Pixel()
 		if pixel != test.pixel {
 			t.Errorf(errf, test.tile, test.pixel, pixel)
 		}

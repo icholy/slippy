@@ -17,8 +17,8 @@ func (p Pixel) floatY() float64 {
 	return float64(p.Y)
 }
 
-// ToCoords converts to WGS84 coordaintes
-func (p Pixel) ToCoords() Coordinate {
+// Coords converts to WGS84 coordaintes
+func (p Pixel) Coords() Coordinate {
 	size := float64(mapDimensions(p.Z))
 	x := (clip(p.floatX(), 0, size-1) / size) - 0.5
 	y := 0.5 - (clip(p.floatY(), 0, size-1) / size)
@@ -27,8 +27,8 @@ func (p Pixel) ToCoords() Coordinate {
 	return ClippedCoords(lat, lon)
 }
 
-// ToTile gets the tile that contains this pixel as well as the offset pixel within that tile.
-func (p Pixel) ToTile() (tile Tile, offset TilePixel) {
+// Tile gets the tile that contains this pixel as well as the offset pixel within that tile.
+func (p Pixel) Tile() (tile Tile, offset TilePixel) {
 	tile = Tile{
 		X: p.X / TileSize,
 		Y: p.Y / TileSize,
@@ -46,9 +46,4 @@ func (p Pixel) ToTile() (tile Tile, offset TilePixel) {
 type TilePixel struct {
 	X, Y int
 	Tile *Tile
-}
-
-func (p TilePixel) toCoords() Coordinate {
-	panic("TilePixel.ToCoords() Not Implemented")
-	//return Coords{}
 }

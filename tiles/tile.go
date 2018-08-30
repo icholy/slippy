@@ -8,8 +8,8 @@ type Tile struct {
 	X, Y, Z int
 }
 
-// ToPixel return the NW pixel of this tile
-func (t Tile) ToPixel() Pixel {
+// Pixel return the NW pixel of this tile
+func (t Tile) Pixel() Pixel {
 	return Pixel{
 		X: t.X * TileSize,
 		Y: t.Y * TileSize,
@@ -19,7 +19,7 @@ func (t Tile) ToPixel() Pixel {
 
 // ToPixelWithOffset returns a pixel at the origin with an offset added. Useful for getting the center pixel of a tile or another non-origin pixel.
 func (t Tile) ToPixelWithOffset(offset Pixel) (pixel Pixel) {
-	pixel = t.ToPixel()
+	pixel = t.Pixel()
 	pixel.X += offset.X
 	pixel.Y += offset.Y
 	return
@@ -29,7 +29,7 @@ func (t Tile) ToPixelWithOffset(offset Pixel) (pixel Pixel) {
 // Clips the coordinates if they are outside of Min/MaxLat/Lon
 func FromCoordinate(lat, lon float64, zoom int) Tile {
 	c := ClippedCoords(lat, lon)
-	p := c.ToPixel(zoom)
-	t, _ := p.ToTile()
+	p := c.Pixel(zoom)
+	t, _ := p.Tile()
 	return t
 }

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestPixelToCoords(t *testing.T) {
+func TestPixelCoords(t *testing.T) {
 	coordTests := []struct {
 		pixel  Pixel
 		coords Coordinate
@@ -13,14 +13,14 @@ func TestPixelToCoords(t *testing.T) {
 	}
 	errf := "Pixel%+v: %+v -> %+v"
 	for _, test := range coordTests {
-		coords := test.pixel.ToCoords()
+		coords := test.pixel.Coords()
 		if coords.Equals(test.coords) {
 			t.Errorf(errf, test.pixel, test.coords, coords)
 		}
 	}
 }
 
-func TestPixelToTile(t *testing.T) {
+func TestPixelTile(t *testing.T) {
 	coordTests := []struct {
 		pixel Pixel
 		tile  Tile
@@ -29,7 +29,7 @@ func TestPixelToTile(t *testing.T) {
 	}
 	errf := "Pixel%+v: %+v -> %+v"
 	for _, test := range coordTests {
-		tile, tpixel := test.pixel.ToTile()
+		tile, tpixel := test.pixel.Tile()
 		_ = tpixel
 		// t.Logf("%+v -> %+v %+v", test.pixel, tile, tpixel)
 		// TODO test tpixel

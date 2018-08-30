@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestToPixel(t *testing.T) {
+func TestPixel(t *testing.T) {
 	pixelTests := []struct {
 		coords Coordinate
 		pixel  Pixel
@@ -13,7 +13,7 @@ func TestToPixel(t *testing.T) {
 	}
 	errf := "%+v coords.ToPixel(%v) %+v -> %+v"
 	for _, test := range pixelTests {
-		pixel := test.coords.ToPixel(test.pixel.Z)
+		pixel := test.coords.Pixel(test.pixel.Z)
 		if pixel != test.pixel {
 			t.Errorf(errf, test.coords, test.pixel, pixel)
 		}
