@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/buckhx/tiles/tiles"
+	"github.com/icholy/slippy/tiles"
 )
 
 func TestTileToPixel(t *testing.T) {

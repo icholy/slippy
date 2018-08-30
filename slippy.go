@@ -7,10 +7,10 @@ import (
 	"log"
 	"math/rand"
 
-	"github.com/buckhx/tiles"
 	"github.com/faiface/pixel"
 
 	"github.com/icholy/slippy/convert"
+	"github.com/icholy/slippy/tiles"
 	"github.com/icholy/slippy/util"
 )
 

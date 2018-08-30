@@ -1,8 +1,9 @@
 package convert
 
 import (
-	"github.com/buckhx/tiles"
 	"github.com/faiface/pixel"
+
+	"github.com/icholy/slippy/tiles"
 )
 
 // CoordinateVec converst a coordinate into a vec
