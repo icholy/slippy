@@ -76,7 +76,7 @@ func check(errs ...error) {
 	}
 }
 
-const UserAgent = "Slippy/Go-Test"
+var UserAgent = "Slippy/Go-Test"
 
 func FetchImage(url string) (image.Image, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
