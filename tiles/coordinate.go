@@ -12,8 +12,8 @@ type Coordinate struct {
 	Lat, Lon float64
 }
 
-// VecCoordinate converts a vec into a coordinate
-func VecCoordinate(v pixel.Vec, zoom int) Coordinate {
+// Coord converts a vec into a coordinate
+func Coord(v pixel.Vec, zoom int) Coordinate {
 	size := float64(mapDimensions(zoom))
 	x := (clip(v.X, 0, size-1) / size) - 0.5
 	y := 0.5 - (clip(-v.Y, 0, size-1) / size)
