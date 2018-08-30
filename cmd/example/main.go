@@ -41,7 +41,7 @@ func run() error {
 	win.Clear(colornames.Skyblue)
 
 	for _, t := range tt {
-		t.Draw(win)
+		t.Draw(win, pixel.IM)
 		util.DrawRect(win, t.Rect(), colornames.Black)
 	}
 

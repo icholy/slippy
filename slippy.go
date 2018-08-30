@@ -59,12 +59,12 @@ func (t ImageTile) DrawVec() pixel.Vec {
 	return t.Vec().Add(center).Add(offset)
 }
 
-func (t ImageTile) Draw(tg pixel.Target) {
+func (t ImageTile) Draw(tg pixel.Target, m pixel.Matrix) {
 	if t.Sprite == nil {
 		return
 	}
 	v := t.DrawVec()
-	t.Sprite.Draw(tg, pixel.IM.Moved(v))
+	t.Sprite.Draw(tg, pixel.IM.Moved(v).Chained(m))
 }
 
 func NewImageTile(t tiles.Tile, bounds pixel.Rect) ImageTile {
