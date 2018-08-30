@@ -12,8 +12,8 @@ import (
 	"github.com/icholy/slippy/util"
 )
 
-func loadTiles(r pixel.Rect, zoom int) ([]slippy.Tile, error) {
-	var tt []slippy.Tile
+func loadTiles(r pixel.Rect, zoom int) ([]slippy.ImageTile, error) {
+	var tt []slippy.ImageTile
 	for _, tile := range slippy.RectTiles(r, zoom) {
 		t, err := slippy.LoadTile(tile)
 		if err != nil {

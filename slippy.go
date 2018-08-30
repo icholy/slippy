@@ -20,9 +20,9 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 	return pixel.PictureDataFromImage(img), nil
 }
 
-type Tile struct {
-	t tiles.Tile
-	s *pixel.Sprite
+type ImageTile struct {
+	tiles.Tile
+	Sprite *pixel.Sprite
 }
 
 func URL(t tiles.Tile) string {
@@ -33,27 +33,19 @@ func URL(t tiles.Tile) string {
 	)
 }
 
-func LoadTile(t tiles.Tile) (Tile, error) {
+func LoadTile(t tiles.Tile) (ImageTile, error) {
 	pic, err := TilePictureData(t)
 	if err != nil {
-		return Tile{}, err
+		return ImageTile{}, err
 	}
-	return Tile{
-		t: t,
-		s: pixel.NewSprite(pic, pic.Bounds()),
+	return ImageTile{
+		Tile:   t,
+		Sprite: pixel.NewSprite(pic, pic.Bounds()),
 	}, nil
 }
 
-func (t Tile) Rect() pixel.Rect {
-	return t.t.Rect()
-}
-
-func (t Tile) Vec() pixel.Vec {
-	return t.t.Vec()
-}
-
-func (t Tile) Draw(tg pixel.Target) {
+func (t ImageTile) Draw(tg pixel.Target) {
 	m := float64(tiles.TileSize) / 2
-	v := t.t.Vec().Add(pixel.V(m, m))
-	t.s.Draw(tg, pixel.IM.Moved(v))
+	v := t.Vec().Add(pixel.V(m, m))
+	t.Sprite.Draw(tg, pixel.IM.Moved(v))
 }
