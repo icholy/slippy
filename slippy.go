@@ -59,15 +59,6 @@ func (m *Map) Draw(tg pixel.Target, mt pixel.Matrix) {
 	}
 }
 
-func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
-	url := URL(t)
-	img, err := util.FetchImage(url)
-	if err != nil {
-		return nil, err
-	}
-	return pixel.PictureDataFromImage(img), nil
-}
-
 type ImageTile struct {
 	tiles.Tile
 	Sprite *pixel.Sprite
@@ -83,10 +74,12 @@ func URL(t tiles.Tile) string {
 }
 
 func (t *ImageTile) Fetch() error {
-	pic, err := TilePictureData(t.Tile)
+	url := URL(t.Tile)
+	img, err := util.FetchImage(url)
 	if err != nil {
 		return err
 	}
+	pic := pixel.PictureDataFromImage(img)
 	t.Sprite = pixel.NewSprite(pic, t.Frame)
 	return nil
 }
