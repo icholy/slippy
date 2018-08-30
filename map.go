@@ -3,10 +3,9 @@ package slippy
 import "github.com/faiface/pixel"
 
 type Options struct {
-	Lat, Lon float64
-	Center   Coordinate
-	Zoom     int
-	Bounds   pixel.Rect
+	Center Coordinate
+	Zoom   int
+	Bounds pixel.Rect
 }
 
 type Map struct {
@@ -18,7 +17,7 @@ type Map struct {
 
 func New(opts Options) *Map {
 	var (
-		origin = Vec(opts.Lat, opts.Lon, opts.Zoom)
+		origin = opts.Center.Vec(opts.Zoom)
 		area   = opts.Bounds.Moved(origin)
 	)
 	return &Map{
