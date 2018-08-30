@@ -29,6 +29,8 @@ func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 type ImageTile struct {
 	tiles.Tile
 	Sprite *pixel.Sprite
+	Frame  pixel.Rect
+	Offset pixel.Vec
 }
 
 func URL(t tiles.Tile) string {
@@ -48,14 +50,6 @@ func (t *ImageTile) Fetch() error {
 	return nil
 }
 
-func LoadTile(t tiles.Tile) (ImageTile, error) {
-	m := ImageTile{Tile: t}
-	if err := m.Fetch(); err != nil {
-		return ImageTile{}, err
-	}
-	return m, nil
-}
-
 func (t ImageTile) Draw(tg pixel.Target) {
 	if t.Sprite == nil {
 		return
@@ -63,6 +57,21 @@ func (t ImageTile) Draw(tg pixel.Target) {
 	m := float64(tiles.TileSize) / 2
 	v := t.Vec().Add(pixel.V(m, m))
 	t.Sprite.Draw(tg, pixel.IM.Moved(v))
+}
+
+func NewImageTile(t tiles.Tile, bounds pixel.Rect) ImageTile {
+	var (
+		pic     = Placeholder
+		rect    = t.Rect()
+		overlap = rect.Intersect(bounds)
+		frame   = overlap.Moved(pixel.ZV.Sub(rect.Min))
+	)
+
+	return ImageTile{
+		Tile:   t,
+		Sprite: pixel.NewSprite(pic, pic.Bounds()),
+		Frame:  frame,
+	}
 }
 
 // RectTiles returns a slice of tiles requires to fully cover the rect
@@ -79,9 +88,7 @@ func RectTiles(bounds pixel.Rect, zoom int) []ImageTile {
 				Y: y,
 				Z: zoom,
 			}
-			tt = append(tt, ImageTile{
-				Tile: t,
-			})
+			tt = append(tt, NewImageTile(t, bounds))
 		}
 	}
 	return tt
