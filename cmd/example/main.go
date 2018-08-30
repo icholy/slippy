@@ -11,8 +11,9 @@ import (
 )
 
 func run() error {
+	// Create the window
 	cfg := pixelgl.WindowConfig{
-		Title:  "Pixel Rocks!",
+		Title:  "OpenStreetMaps",
 		Bounds: pixel.R(0, 0, 1024, 768),
 		VSync:  true,
 	}
@@ -21,6 +22,7 @@ func run() error {
 		return err
 	}
 
+	// create the map
 	padding := pixel.V(10, 10)
 	m := slippy.New(slippy.Options{
 		Zoom:   10,
@@ -31,13 +33,16 @@ func run() error {
 		},
 	})
 
+	// fetch the tiles
 	if err := m.Fetch(); err != nil {
 		return err
 	}
 
+	// draw the map
 	m.Draw(win, pixel.IM)
 
 	for !win.Closed() {
+		// print clicked location coordinates
 		if win.JustPressed(pixelgl.MouseButtonLeft) {
 			fmt.Println("Clicked", m.Coord(win.MousePosition()))
 		}
