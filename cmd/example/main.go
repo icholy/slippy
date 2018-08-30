@@ -15,7 +15,7 @@ import (
 func loadTiles(r pixel.Rect, zoom int) ([]slippy.Tile, error) {
 	var tt []slippy.Tile
 	for _, tile := range slippy.RectTiles(r, zoom) {
-		t, err := slippy.LoadTile(tile.Tile)
+		t, err := slippy.LoadTile(tile)
 		if err != nil {
 			return nil, err
 		}
