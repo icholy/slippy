@@ -24,7 +24,6 @@ func run() error {
 	}
 
 	zoom := 10
-
 	origin := tiles.Vec(43.174366, -79.231511, zoom)
 	frame := pixel.R(0, 0, 450, 500).Moved(origin)
 
@@ -35,17 +34,16 @@ func run() error {
 		}
 	}
 
-	camera := pixel.ZV.Sub(origin).Add(pixel.V(200, 200))
-	win.SetMatrix(pixel.IM.Moved(camera))
+	win.SetMatrix(pixel.IM.Moved(pixel.V(5, 5)))
 
 	win.Clear(colornames.Skyblue)
 
 	for _, t := range tt {
-		t.Draw(win, pixel.IM)
-		util.DrawRect(win, t.Rect(), colornames.Black)
+		t.Draw(win, pixel.IM.Moved(pixel.ZV.Sub(origin)))
+		util.DrawRect(win, t.Rect().Moved(pixel.ZV.Sub(origin)), colornames.Black)
 	}
 
-	util.DrawRect(win, frame, colornames.Blue)
+	util.DrawRect(win, frame.Moved(pixel.ZV.Sub(origin)), colornames.Blue)
 	util.DrawVec(win, origin)
 
 	for !win.Closed() {
