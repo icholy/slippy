@@ -30,6 +30,5 @@ func (t Tile) ToPixelWithOffset(offset Pixel) (pixel Pixel) {
 func FromCoordinate(lat, lon float64, zoom int) Tile {
 	c := ClippedCoords(lat, lon)
 	p := c.Pixel(zoom)
-	t, _ := p.Tile()
-	return t
+	return p.Tile()
 }

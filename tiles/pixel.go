@@ -27,23 +27,11 @@ func (p Pixel) Coords() Coordinate {
 	return ClippedCoords(lat, lon)
 }
 
-// Tile gets the tile that contains this pixel as well as the offset pixel within that tile.
-func (p Pixel) Tile() (tile Tile, offset TilePixel) {
-	tile = Tile{
+// Tile gets the tile that contains this pixel
+func (p Pixel) Tile() Tile {
+	return Tile{
 		X: p.X / TileSize,
 		Y: p.Y / TileSize,
 		Z: p.Z,
 	}
-	offset = TilePixel{
-		X:    p.X % TileSize,
-		Y:    p.Y % TileSize,
-		Tile: &tile,
-	}
-	return
-}
-
-// TilePixel is a pixel whose origin (0,0) is NW corner of Tile referenced in to tile field
-type TilePixel struct {
-	X, Y int
-	Tile *Tile
 }

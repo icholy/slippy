@@ -8,13 +8,13 @@ import (
 	"golang.org/x/image/colornames"
 
 	"github.com/icholy/slippy"
-	"github.com/icholy/slippy/convert"
+	"github.com/icholy/slippy/tiles"
 	"github.com/icholy/slippy/util"
 )
 
 func loadTiles(r pixel.Rect, zoom int) ([]slippy.Tile, error) {
 	var tt []slippy.Tile
-	for _, tile := range convert.RectTiles(r, zoom) {
+	for _, tile := range tiles.RectTiles(r, zoom) {
 		t, err := slippy.LoadTile(tile)
 		if err != nil {
 			return nil, err
