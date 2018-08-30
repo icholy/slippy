@@ -4,8 +4,8 @@ import (
 	"github.com/faiface/pixel"
 )
 
-// CoordinateVec converst a coordinate into a vec
-func CoordinateVec(c Coordinate, zoom int) pixel.Vec {
+// Vec converts a coordinate into a vec
+func (c Coordinate) Vec(zoom int) pixel.Vec {
 	return c.Pixel(zoom).Vec()
 }
 

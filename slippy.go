@@ -14,8 +14,7 @@ import (
 )
 
 func Vec(lat, lon float64, zoom int) pixel.Vec {
-	c := tiles.ClippedCoords(lat, lon)
-	return tiles.CoordinateVec(c, zoom)
+	return tiles.ClippedCoords(lat, lon).Vec(zoom)
 }
 
 func TilePictureData(t tiles.Tile) *pixel.PictureData {
