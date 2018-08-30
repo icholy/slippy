@@ -30,14 +30,19 @@ func New(opts Options) *Map {
 	}
 }
 
+// Coord returns the pixels coordinate assuming the camera is at 0,0
+// and the map was drawn with the identify matrix
 func (m *Map) Coord(v pixel.Vec) Coordinate {
 	return Coord(v.Sub(m.opts.Bounds.Min).Add(m.origin), m.opts.Zoom)
 }
 
+// Vec returns the coordinate's pixel assuming the camera is at 0,0
+// and the map was drawn with the identify matrix
 func (m *Map) Vec(c Coordinate) pixel.Vec {
 	return c.Vec(m.opts.Zoom).Add(m.opts.Bounds.Min).Sub(m.origin)
 }
 
+// Fetch the tile imagery
 func (m *Map) Fetch() error {
 	for i := range m.tiles {
 		if err := m.tiles[i].Fetch(); err != nil {
