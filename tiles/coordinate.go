@@ -22,6 +22,11 @@ func Coord(v pixel.Vec, zoom int) Coordinate {
 	return ClippedCoords(lat, lon)
 }
 
+// Vec converts a lat lon into a vec
+func Vec(lat, lon float64, zoom int) pixel.Vec {
+	return ClippedCoords(lat, lon).Vec(zoom)
+}
+
 // Equals checks if these coords are equal avoiding some float precision
 func (c Coordinate) Equals(that Coordinate) bool {
 	eq := floatEquals(c.Lat, that.Lat)

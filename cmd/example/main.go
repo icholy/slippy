@@ -37,7 +37,7 @@ func run() error {
 
 	zoom := 10
 
-	origin := slippy.Vec(43.174366, -79.231511, zoom)
+	origin := tiles.Vec(43.174366, -79.231511, zoom)
 	frame := pixel.R(0, 0, 450, 500).Moved(origin)
 
 	tt, err := loadTiles(frame, zoom)

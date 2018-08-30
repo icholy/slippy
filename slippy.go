@@ -13,10 +13,6 @@ import (
 	"github.com/icholy/slippy/util"
 )
 
-func Vec(lat, lon float64, zoom int) pixel.Vec {
-	return tiles.ClippedCoords(lat, lon).Vec(zoom)
-}
-
 func TilePictureData(t tiles.Tile) *pixel.PictureData {
 	url := URL(t)
 	img, err := util.FetchImage(url)
