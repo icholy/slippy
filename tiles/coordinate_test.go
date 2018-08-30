@@ -13,7 +13,7 @@ func TestPixel(t *testing.T) {
 	}
 	errf := "%+v coords.ToPixel(%v) %+v -> %+v"
 	for _, test := range pixelTests {
-		pixel := test.coords.Pixel(test.pixel.Z)
+		pixel := test.coords.pixel(test.pixel.Z)
 		if pixel != test.pixel {
 			t.Errorf(errf, test.coords, test.pixel, pixel)
 		}

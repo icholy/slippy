@@ -3,11 +3,23 @@ package tiles
 import (
 	"fmt"
 	"math"
+
+	"github.com/faiface/pixel"
 )
 
 // Coordinate is a simple struct for hold WGS-84 Lat Lon coordinates in degrees
 type Coordinate struct {
 	Lat, Lon float64
+}
+
+// VecCoordinate converts a vec into a coordinate
+func VecCoordinate(v pixel.Vec, zoom int) Coordinate {
+	return VecPixel(v, zoom).Coords()
+}
+
+// Vec converts a coordinate into a vec
+func (c Coordinate) Vec(zoom int) pixel.Vec {
+	return c.pixel(zoom).Vec()
 }
 
 // Equals checks if these coords are equal avoiding some float precision
@@ -17,8 +29,8 @@ func (c Coordinate) Equals(that Coordinate) bool {
 	return eq
 }
 
-// Pixel gets the Pixel of the coord at the zoom level
-func (c Coordinate) Pixel(zoom int) Pixel {
+// pixel gets the Pixel of the coord at the zoom level
+func (c Coordinate) pixel(zoom int) Pixel {
 	x := (c.Lon + 180) / 360.0
 	sinLat := math.Sin(c.Lat * math.Pi / 180.0)
 	y := 0.5 - math.Log((1+sinLat)/(1-sinLat))/(4*math.Pi)

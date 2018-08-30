@@ -2,11 +2,22 @@ package tiles
 
 import (
 	"math"
+
+	"github.com/faiface/pixel"
 )
 
 // Pixel in a WGS84 Mercator map projection with a NW origin (0,0) of the projection
 type Pixel struct {
 	X, Y, Z int
+}
+
+// VecPixel converts a vec into a pixel
+func VecPixel(v pixel.Vec, zoom int) Pixel {
+	return Pixel{
+		X: int(v.X),
+		Y: -int(v.Y),
+		Z: zoom,
+	}
 }
 
 func (p Pixel) floatX() float64 {
@@ -34,4 +45,12 @@ func (p Pixel) Tile() Tile {
 		Y: p.Y / TileSize,
 		Z: p.Z,
 	}
+}
+
+// Vec converts a pixel into a vec
+func (p Pixel) Vec() pixel.Vec {
+	return pixel.V(
+		float64(p.X),
+		-float64(p.Y),
+	)
 }
