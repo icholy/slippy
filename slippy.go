@@ -46,16 +46,24 @@ func (t *ImageTile) Fetch() error {
 	if err != nil {
 		return err
 	}
-	t.Sprite = pixel.NewSprite(pic, pic.Bounds())
+	t.Sprite = pixel.NewSprite(pic, t.Frame)
 	return nil
+}
+
+func (t ImageTile) DrawVec() pixel.Vec {
+	offset := t.Frame.Min
+	center := pixel.Vec{
+		X: t.Frame.W() / 2,
+		Y: t.Frame.H() / 2,
+	}
+	return t.Vec().Add(center).Add(offset)
 }
 
 func (t ImageTile) Draw(tg pixel.Target) {
 	if t.Sprite == nil {
 		return
 	}
-	m := float64(tiles.TileSize) / 2
-	v := t.Vec().Add(pixel.V(m, m))
+	v := t.DrawVec()
 	t.Sprite.Draw(tg, pixel.IM.Moved(v))
 }
 
@@ -66,10 +74,9 @@ func NewImageTile(t tiles.Tile, bounds pixel.Rect) ImageTile {
 		overlap = rect.Intersect(bounds)
 		frame   = overlap.Moved(pixel.ZV.Sub(rect.Min))
 	)
-
 	return ImageTile{
 		Tile:   t,
-		Sprite: pixel.NewSprite(pic, pic.Bounds()),
+		Sprite: pixel.NewSprite(pic, frame),
 		Frame:  frame,
 	}
 }
