@@ -48,7 +48,7 @@ func run() error {
 
 	for !win.Closed() {
 		// print clicked location coordinates
-		if win.JustPressed(pixelgl.MouseButtonLeft) {
+		if win.Pressed(pixelgl.MouseButtonLeft) {
 			coord := m.Coord(win.MousePosition())
 			fmt.Println("Clicked", coord)
 			drawVec(win, m.Vec(coord))
