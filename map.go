@@ -17,8 +17,10 @@ type Map struct {
 
 func New(opts Options) *Map {
 	var (
-		origin = opts.Center.Vec(opts.Zoom)
-		area   = opts.Bounds.Moved(origin)
+		bounds = opts.Bounds
+		half   = bounds.Min.To(bounds.Max).Scaled(0.5)
+		origin = opts.Center.Vec(opts.Zoom).Sub(half)
+		area   = bounds.Moved(origin)
 	)
 	return &Map{
 		opts:   opts,
