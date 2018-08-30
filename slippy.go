@@ -57,15 +57,3 @@ func (t Tile) Draw(tg pixel.Target) {
 	v := t.t.Vec().Add(pixel.V(m, m))
 	t.s.Draw(tg, pixel.IM.Moved(v))
 }
-
-func loadTiles(r pixel.Rect, zoom int) ([]Tile, error) {
-	var tt []Tile
-	for _, tile := range RectTiles(r, zoom) {
-		t, err := LoadTile(tile)
-		if err != nil {
-			return nil, err
-		}
-		tt = append(tt, t)
-	}
-	return tt, nil
-}
