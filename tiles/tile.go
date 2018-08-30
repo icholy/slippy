@@ -3,8 +3,6 @@
 // There is also a TileIndex which can be used to store data in a single place and aggregate when needed
 package tiles
 
-import "errors"
-
 // Tile is a simple struct for holding the XYZ coordinates for use in mapping
 type Tile struct {
 	X, Y, Z int
@@ -24,65 +22,6 @@ func (t Tile) ToPixelWithOffset(offset Pixel) (pixel Pixel) {
 	pixel = t.ToPixel()
 	pixel.X += offset.X
 	pixel.Y += offset.Y
-	return
-}
-
-// Quadkey returns the string representation of a Bing Maps quadkey. See more https://msdn.microsoft.com/en-us/library/bb259689.aspx
-// Panics if the tile is invalid or if it can't write to the internal buffer
-func (t Tile) Quadkey() Quadkey {
-	//bytes.Buffer was bottleneck
-	z := t.Z
-	var qk [ZMax]byte
-	for i := z; i > 0; i-- {
-		q := 0
-		m := 1 << uint(i-1)
-		if (t.X & m) != 0 {
-			q++
-		}
-		if (t.Y & m) != 0 {
-			q += 2
-		}
-		// strconv.Itoa(q) was the bottleneck
-		var d byte
-		switch q {
-		case 0:
-			d = '0'
-		case 1:
-			d = '1'
-		case 2:
-			d = '2'
-		case 3:
-			d = '3'
-		default:
-			panic("Invalid tile.Quadkey()")
-		}
-		qk[z-i] = d
-	}
-	return Quadkey(qk[:z]) // current bottleneck
-}
-
-// FromQuadkeyString returns a tile that represents the given quadkey string. Returns an error if quadkey string is invalid.
-func FromQuadkeyString(qk string) (tile Tile, err error) {
-	tile.Z = len(qk)
-	for i := tile.Z; i > 0; i-- {
-		m := 1 << uint(i-1)
-		c := len(qk) - i
-		q := qk[c]
-		switch q {
-		case '0':
-		case '1':
-			tile.X |= m
-		case '2':
-			tile.Y |= m
-		case '3':
-			tile.X |= m
-			tile.Y |= m
-		default:
-			err = errors.New("Invalid Quadkey " + qk)
-			tile = Tile{} // zero tile
-			return
-		}
-	}
 	return
 }
 

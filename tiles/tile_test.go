@@ -24,42 +24,9 @@ func TestTileToPixel(t *testing.T) {
 	}
 }
 
-func TestTileToQuadkey(t *testing.T) {
-	tileTests := []struct {
-		tile    tiles.Tile
-		quadkey tiles.Quadkey
-	}{
-		{tiles.Tile{X: 26, Y: 48, Z: 7}, tiles.Quadkey("0231010")},
-	}
-	errf := "Tile%+v: %+v -> %+v"
-	for _, test := range tileTests {
-		qk := test.tile.Quadkey()
-		if qk != test.quadkey {
-			t.Errorf(errf, test.tile, test.quadkey, qk)
-		}
-	}
-}
-
-func TestTileFromQuadkey(t *testing.T) {
-	tileTests := []struct {
-		quadkey tiles.Quadkey
-		tile    tiles.Tile
-	}{
-		{tiles.Quadkey("0231010"), tiles.Tile{X: 26, Y: 48, Z: 7}},
-	}
-	errf := "QuadKey%+v: %+v -> %+v"
-	for _, test := range tileTests {
-		tile := test.quadkey.ToTile()
-		if tile != test.tile {
-			t.Errorf(errf, test.quadkey, test.tile, tile)
-		}
-	}
-}
-
 var (
 	// These are globals to make sure that the compiler doesn't skip benchmarks
 	bT tiles.Tile
-	bQ tiles.Quadkey
 )
 
 func BenchmarkTileFromCoordinate(b *testing.B) {
@@ -71,25 +38,6 @@ func BenchmarkTileFromCoordinate(b *testing.B) {
 		t = tiles.FromCoordinate(lat, lon, z)
 	}
 	bT = t
-}
-
-func BenchmarkTileFromQuadkey(b *testing.B) {
-	var t tiles.Tile
-	qk := "032010110132023321"
-	for i := 0; i < b.N; i++ {
-		t, _ = tiles.FromQuadkeyString(qk)
-	}
-	bT = t
-
-}
-
-func BenchmarkQuadkeyFromTile(b *testing.B) {
-	var q tiles.Quadkey
-	t := tiles.Tile{X: 77197, Y: 98526, Z: 18}
-	for i := 0; i < b.N; i++ {
-		q = t.Quadkey()
-	}
-	bQ = q
 }
 
 func ExampleFromCoordinate() {
