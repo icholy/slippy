@@ -28,6 +28,14 @@ func New(opts Options) *Map {
 	}
 }
 
+func (m *Map) Coord(v pixel.Vec) Coordinate {
+	return Coord(v.Sub(m.opts.Bounds.Min).Add(m.origin), m.opts.Zoom)
+}
+
+func (m *Map) Vec(c Coordinate) pixel.Vec {
+	return c.Vec(m.opts.Zoom).Add(m.opts.Bounds.Min).Sub(m.origin)
+}
+
 func (m *Map) Fetch() error {
 	for i := range m.tiles {
 		if err := m.tiles[i].Fetch(); err != nil {
