@@ -2,9 +2,7 @@ package slippy
 
 import (
 	"fmt"
-	"image"
 	_ "image/png"
-	"log"
 	"math/rand"
 
 	"github.com/faiface/pixel"
@@ -13,14 +11,13 @@ import (
 	"github.com/icholy/slippy/util"
 )
 
-func TilePictureData(t tiles.Tile) *pixel.PictureData {
+func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
 	url := URL(t)
 	img, err := util.FetchImage(url)
 	if err != nil {
-		log.Println(err)
-		img = image.NewRGBA(image.Rect(0, 0, tiles.TileSize, tiles.TileSize))
+		return nil, err
 	}
-	return pixel.PictureDataFromImage(img)
+	return pixel.PictureDataFromImage(img), nil
 }
 
 type Tile struct {
@@ -37,7 +34,10 @@ func URL(t tiles.Tile) string {
 }
 
 func LoadTile(t tiles.Tile) (Tile, error) {
-	pic := TilePictureData(t)
+	pic, err := TilePictureData(t)
+	if err != nil {
+		return Tile{}, err
+	}
 	return Tile{
 		t: t,
 		s: pixel.NewSprite(pic, pic.Bounds()),
