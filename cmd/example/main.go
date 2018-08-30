@@ -20,11 +20,15 @@ func run() error {
 		return err
 	}
 
+	padding := pixel.V(10, 10)
 	m := slippy.New(slippy.Options{
-		Lat:    43.174366,
-		Lon:    -79.231511,
-		Zoom:   10,
-		Bounds: win.Bounds(),
+		Lat:  43.174366,
+		Lon:  -79.231511,
+		Zoom: 10,
+		Bounds: pixel.Rect{
+			Min: win.Bounds().Min.Add(padding),
+			Max: win.Bounds().Max.Sub(padding),
+		},
 	})
 
 	if err := m.Fetch(); err != nil {
