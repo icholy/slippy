@@ -52,8 +52,8 @@ func (m *Map) Fetch() error {
 	return nil
 }
 
-func (m *Map) Draw(tg pixel.Target) {
-	reset := pixel.IM.Moved(pixel.ZV.Sub(m.origin))
+func (m *Map) Draw(tg pixel.Target, mt pixel.Matrix) {
+	reset := pixel.IM.Moved(pixel.ZV.Sub(m.origin)).Chained(mt)
 	for _, t := range m.tiles {
 		t.Draw(tg, reset)
 	}
