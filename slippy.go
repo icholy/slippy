@@ -2,13 +2,19 @@ package slippy
 
 import (
 	"fmt"
-	_ "image/png"
+	"image"
 	"math/rand"
 
 	"github.com/faiface/pixel"
 
 	"github.com/icholy/slippy/tiles"
 	"github.com/icholy/slippy/util"
+)
+
+var (
+	Placeholder = pixel.PictureDataFromImage(
+		image.NewRGBA(image.Rect(0, 0, tiles.TileSize, tiles.TileSize)),
+	)
 )
 
 func TilePictureData(t tiles.Tile) (*pixel.PictureData, error) {
@@ -33,19 +39,50 @@ func URL(t tiles.Tile) string {
 	)
 }
 
-func LoadTile(t tiles.Tile) (ImageTile, error) {
-	pic, err := TilePictureData(t)
+func (t *ImageTile) Fetch() error {
+	pic, err := TilePictureData(t.Tile)
 	if err != nil {
+		return err
+	}
+	t.Sprite = pixel.NewSprite(pic, pic.Bounds())
+	return nil
+}
+
+func LoadTile(t tiles.Tile) (ImageTile, error) {
+	m := ImageTile{Tile: t}
+	if err := m.Fetch(); err != nil {
 		return ImageTile{}, err
 	}
-	return ImageTile{
-		Tile:   t,
-		Sprite: pixel.NewSprite(pic, pic.Bounds()),
-	}, nil
+	return m, nil
 }
 
 func (t ImageTile) Draw(tg pixel.Target) {
+	if t.Sprite == nil {
+		return
+	}
 	m := float64(tiles.TileSize) / 2
 	v := t.Vec().Add(pixel.V(m, m))
 	t.Sprite.Draw(tg, pixel.IM.Moved(v))
+}
+
+// RectTiles returns a slice of tiles requires to fully cover the rect
+func RectTiles(bounds pixel.Rect, zoom int) []ImageTile {
+	var (
+		min = tiles.FromVec(bounds.Min, zoom)
+		max = tiles.FromVec(bounds.Max, zoom)
+		tt  []ImageTile
+	)
+	for x := min.X; x <= max.X; x++ {
+		for y := max.Y; y <= min.Y; y++ {
+			t := tiles.Tile{
+				X: x,
+				Y: y,
+				Z: zoom,
+			}
+			tt = append(tt, ImageTile{
+				Tile: t,
+			})
+		}
+	}
+	return tt
 }

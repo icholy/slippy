@@ -12,18 +12,6 @@ import (
 	"github.com/icholy/slippy/util"
 )
 
-func loadTiles(r pixel.Rect, zoom int) ([]slippy.ImageTile, error) {
-	var tt []slippy.ImageTile
-	for _, tile := range slippy.RectTiles(r, zoom) {
-		t, err := slippy.LoadTile(tile)
-		if err != nil {
-			return nil, err
-		}
-		tt = append(tt, t)
-	}
-	return tt, nil
-}
-
 func run() error {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Pixel Rocks!",
@@ -40,9 +28,11 @@ func run() error {
 	origin := tiles.Vec(43.174366, -79.231511, zoom)
 	frame := pixel.R(0, 0, 450, 500).Moved(origin)
 
-	tt, err := loadTiles(frame, zoom)
-	if err != nil {
-		return err
+	tt := slippy.RectTiles(frame, zoom)
+	for i := range tt {
+		if err := tt[i].Fetch(); err != nil {
+			return err
+		}
 	}
 
 	camera := pixel.ZV.Sub(origin).Add(pixel.V(200, 200))
