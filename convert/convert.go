@@ -8,12 +8,12 @@ import (
 
 // CoordinateVec converst a coordinate into a vec
 func CoordinateVec(c tiles.Coordinate, zoom int) pixel.Vec {
-	return PixelVec(c.ToPixel(zoom))
+	return PixelVec(c.Pixel(zoom))
 }
 
 // VecCoordinate converts a vec into a coordinate
 func VecCoordinate(v pixel.Vec, zoom int) tiles.Coordinate {
-	return VecPixel(v, zoom).ToCoords()
+	return VecPixel(v, zoom).Coords()
 }
 
 // VecPixel converts a vec into a pixel
@@ -35,13 +35,13 @@ func PixelVec(p tiles.Pixel) pixel.Vec {
 
 // VecTile converts a vec into a tile that contains that vec
 func VecTile(v pixel.Vec, zoom int) tiles.Tile {
-	t, _ := VecPixel(v, zoom).ToTile()
+	t, _ := VecPixel(v, zoom).Tile()
 	return t
 }
 
 // TileVec returns a vector for the bottom left corner of the tile
 func TileVec(t tiles.Tile) pixel.Vec {
-	p := t.ToPixel()
+	p := t.Pixel()
 	return PixelVec(tiles.Pixel{
 		X: p.X,
 		Y: p.Y + tiles.TileSize,
