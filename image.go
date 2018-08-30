@@ -71,9 +71,9 @@ func NewImageTile(t Tile, bounds pixel.Rect) ImageTile {
 // fromRect returns a slice of tiles requires to fully cover the rect
 func fromRect(bounds pixel.Rect, zoom int) []ImageTile {
 	var (
-		min = fromVec(bounds.Min, zoom)
-		max = fromVec(bounds.Max, zoom)
-		tt  []ImageTile
+		min   = fromVec(bounds.Min, zoom)
+		max   = fromVec(bounds.Max, zoom)
+		tiles []ImageTile
 	)
 	for x := min.X; x <= max.X; x++ {
 		for y := max.Y; y <= min.Y; y++ {
@@ -82,8 +82,8 @@ func fromRect(bounds pixel.Rect, zoom int) []ImageTile {
 				Y: y,
 				Z: zoom,
 			}
-			tt = append(tt, NewImageTile(t, bounds))
+			tiles = append(tiles, NewImageTile(t, bounds))
 		}
 	}
-	return tt
+	return tiles
 }
