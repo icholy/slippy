@@ -12,29 +12,20 @@ type Tile struct {
 	X, Y, Z int
 }
 
-// pixel return the NW pixel of this tile
-func (t Tile) pixel() Pixel {
-	return Pixel{
-		X: t.X * TileSize,
-		Y: t.Y * TileSize,
-		Z: t.Z,
+// FromVec converts a vec into a tile that contains that vec
+func FromVec(v pixel.Vec, zoom int) Tile {
+	return Tile{
+		X: int(v.X) / TileSize,
+		Y: (-int(v.Y)) / TileSize,
+		Z: zoom,
 	}
 }
 
-// ToPixelWithOffset returns a pixel at the origin with an offset added. Useful for getting the center pixel of a tile or another non-origin pixel.
-func (t Tile) ToPixelWithOffset(offset Pixel) (pixel Pixel) {
-	pixel = t.pixel()
-	pixel.X += offset.X
-	pixel.Y += offset.Y
-	return
-}
-
-// FromCoordinate take float lat/lons and a zoom and return a tile
+// FromLatLon take float lat/lons and a zoom and return a tile
 // Clips the coordinates if they are outside of Min/MaxLat/Lon
-func FromCoordinate(lat, lon float64, zoom int) Tile {
+func FromLatLon(lat, lon float64, zoom int) Tile {
 	c := ClippedCoords(lat, lon)
-	p := c.pixel(zoom)
-	return p.Tile()
+	return FromVec(c.Vec(zoom), zoom)
 }
 
 // Vec returns a vector for the bottom left corner of the tile
@@ -56,16 +47,11 @@ func (t Tile) Rect() pixel.Rect {
 	)
 }
 
-// VecTile converts a vec into a tile that contains that vec
-func VecTile(v pixel.Vec, zoom int) Tile {
-	return VecPixel(v, zoom).Tile()
-}
-
 // RectTiles returns a slice of tiles requires to fully cover the rect
 func RectTiles(r pixel.Rect, zoom int) []Tile {
 	var (
-		min = VecTile(r.Min, zoom)
-		max = VecTile(r.Max, zoom)
+		min = FromVec(r.Min, zoom)
+		max = FromVec(r.Max, zoom)
 		tt  []Tile
 	)
 	for x := min.X; x <= max.X; x++ {
