@@ -38,15 +38,28 @@ func run() error {
 		},
 	})
 
-	// fetch the tiles
-	if err := m.Fetch(); err != nil {
-		return err
-	}
-
-	// draw the map
-	m.Draw(win, pixel.IM)
-
 	for !win.Closed() {
+
+		m.FetchAsync()
+
+		// draw the map
+		m.Draw(win, pixel.IM)
+
+		switch {
+		case win.Pressed(pixelgl.KeyLeft):
+			m.SetCenterVec(m.CenterVec().Sub(pixel.V(10, 0)))
+		case win.Pressed(pixelgl.KeyRight):
+			m.SetCenterVec(m.CenterVec().Add(pixel.V(10, 0)))
+		case win.Pressed(pixelgl.KeyUp):
+			m.SetCenterVec(m.CenterVec().Add(pixel.V(0, 10)))
+		case win.Pressed(pixelgl.KeyDown):
+			m.SetCenterVec(m.CenterVec().Sub(pixel.V(0, 10)))
+		case win.JustPressed(pixelgl.KeyEqual):
+			m.SetZoom(m.Zoom() + 1)
+		case win.JustPressed(pixelgl.KeyMinus):
+			m.SetZoom(m.Zoom() - 1)
+		}
+
 		// print clicked location coordinates
 		if win.Pressed(pixelgl.MouseButtonLeft) {
 			coord := m.Coord(win.MousePosition())

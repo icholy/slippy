@@ -21,6 +21,11 @@ type ImageTile struct {
 	Loaded bool
 }
 
+func (t *ImageTile) SetPicture(pic *pixel.PictureData) {
+	t.Sprite = pixel.NewSprite(pic, t.Frame)
+	t.Loaded = true
+}
+
 func (t *ImageTile) Fetch() error {
 	shards := []string{"a", "b", "c"}
 	url := fmt.Sprintf(
@@ -32,8 +37,7 @@ func (t *ImageTile) Fetch() error {
 		return err
 	}
 	pic := pixel.PictureDataFromImage(img)
-	t.Sprite = pixel.NewSprite(pic, t.Frame)
-	t.Loaded = true
+	t.SetPicture(pic)
 	return nil
 }
 
