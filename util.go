@@ -11,18 +11,14 @@ import (
 
 // Earth Parameters
 const (
-	MinLat       float64 = -85.05112878
-	MaxLat       float64 = 85.05112878
-	MinLon       float64 = -180
-	MaxLon       float64 = 180
-	EarthRadiusM float64 = 6378137
+	MaxZ         = 23
+	MinLat       = -85.05112878
+	MaxLat       = 85.05112878
+	MinLon       = -180
+	MaxLon       = 180
+	EarthRadiusM = 6378137
+	TileSize     = 256
 )
-
-// TileSize is the size in pixels of each tile. It can be tuned at the package level.
-var TileSize = 256
-
-// ZMax is the maximum Z coordinate for a tile as well as quadkey level
-const ZMax = 23
 
 // if val is outside of min-max range, clip it to min or max
 // panic if min > max
