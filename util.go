@@ -3,6 +3,7 @@ package slippy
 import (
 	"errors"
 	"image"
+	"image/color"
 	_ "image/png"
 	"math"
 	"net/http"
@@ -47,6 +48,9 @@ func FetchImage(url string) (image.Image, error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNotFound {
+			return BlankTile(), nil
+		}
 		return nil, errors.New(resp.Status)
 	}
 	img, _, err := image.Decode(resp.Body)
@@ -54,4 +58,14 @@ func FetchImage(url string) (image.Image, error) {
 		return nil, err
 	}
 	return img, nil
+}
+
+func BlankTile() image.Image {
+	img := image.NewRGBA(image.Rect(0, 0, TileSize, TileSize))
+	for x := 0; x < TileSize; x++ {
+		for y := 0; y < TileSize; y++ {
+			img.Set(x, y, color.Black)
+		}
+	}
+	return img
 }
