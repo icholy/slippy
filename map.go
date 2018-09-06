@@ -52,8 +52,10 @@ func (m *Map) Zoom() int {
 
 // SetZoom sets the zoom level
 func (m *Map) SetZoom(zoom int) {
-	m.opts.Zoom = zoom
-	m.init()
+	if 1 <= zoom && zoom <= MaxZ {
+		m.opts.Zoom = zoom
+		m.init()
+	}
 }
 
 // Bounds returns the map view bounds
