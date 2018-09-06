@@ -2,12 +2,14 @@ package slippy
 
 import "github.com/faiface/pixel"
 
+// Options contains configuration options for a map
 type Options struct {
 	Center Coordinate
 	Zoom   int
 	Bounds pixel.Rect
 }
 
+// Map draws a slippy map onto a pixel target
 type Map struct {
 	opts     Options
 	origin   pixel.Vec
@@ -16,6 +18,7 @@ type Map struct {
 	provider *Provider
 }
 
+// New creates a new map instance
 func New(opts Options) *Map {
 	m := &Map{
 		opts:     opts,
@@ -36,46 +39,59 @@ func (m *Map) init() {
 	m.tiles = fromRect(m.area, opts.Zoom)
 }
 
+// SetOptions updates the map options
 func (m *Map) SetOptions(opts Options) {
 	m.opts = opts
 	m.init()
 }
 
+// Zoom returns the zoom level
 func (m *Map) Zoom() int {
 	return m.opts.Zoom
 }
 
+// SetZoom sets the zoom level
 func (m *Map) SetZoom(zoom int) {
 	m.opts.Zoom = zoom
 	m.init()
 }
 
+// Bounds returns the map view bounds
 func (m *Map) Bounds() pixel.Rect {
 	return m.opts.Bounds
 }
 
+// SetBounds sets the map view bounds
 func (m *Map) SetBounds(bounds pixel.Rect) {
 	m.opts.Bounds = bounds
 	m.init()
 }
 
+// Center returns the coordinate of the center of the map
 func (m *Map) Center() Coordinate {
 	return m.opts.Center
 }
 
+// Visible checks if a coordinate is contained withing
+// the currently visible map view
 func (m *Map) Visible(c Coordinate) bool {
 	return m.Bounds().Contains(m.Vec(c))
 }
 
+// CenterVec returns the vec that corresponds to the coordinate
+// of the center of the map
 func (m *Map) CenterVec() pixel.Vec {
 	return m.Center().Vec(m.Zoom())
 }
 
+// SetCenter sets the center of the map to the provided coordinate
 func (m *Map) SetCenter(center Coordinate) {
 	m.opts.Center = center
 	m.init()
 }
 
+// SetCenterVec sets the center of the map view to
+// the coordinate which corresponds to the provided vec
 func (m *Map) SetCenterVec(center pixel.Vec) {
 	m.opts.Center = Coord(center, m.Zoom())
 	m.init()
