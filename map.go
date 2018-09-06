@@ -11,18 +11,18 @@ type Options struct {
 
 // Map draws a slippy map onto a pixel target
 type Map struct {
-	opts     Options
-	origin   pixel.Vec
-	area     pixel.Rect
-	tiles    []ImageTile
-	provider *Provider
+	opts   Options
+	origin pixel.Vec
+	area   pixel.Rect
+	tiles  []ImageTile
+	loader *Loader
 }
 
 // New creates a new map instance
 func New(opts Options) *Map {
 	m := &Map{
-		opts:     opts,
-		provider: NewProvider(),
+		opts:   opts,
+		loader: NewLoader(),
 	}
 	m.init()
 	return m
@@ -113,7 +113,7 @@ func (m *Map) Vec(c Coordinate) pixel.Vec {
 func (m *Map) FetchAsync() {
 	for i, t := range m.tiles {
 		if !t.Loaded {
-			pic, ok := m.provider.Picture(t.Tile)
+			pic, ok := m.loader.Picture(t.Tile)
 			if ok {
 				m.tiles[i].SetPicture(pic)
 			}

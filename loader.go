@@ -11,7 +11,7 @@ import (
 	"golang.org/x/sync/semaphore"
 )
 
-type Provider struct {
+type Loader struct {
 	sem     *semaphore.Weighted
 	ctx     context.Context
 	cancel  func()
@@ -20,9 +20,9 @@ type Provider struct {
 	pending map[Tile]bool
 }
 
-func NewProvider() *Provider {
+func NewLoader() *Loader {
 	ctx, cancel := context.WithCancel(context.Background())
-	return &Provider{
+	return &Loader{
 		sem:     semaphore.NewWeighted(3),
 		ctx:     ctx,
 		cancel:  cancel,
@@ -31,11 +31,11 @@ func NewProvider() *Provider {
 	}
 }
 
-func (p Provider) Cancel() {
+func (p Loader) Cancel() {
 	p.cancel()
 }
 
-func (p Provider) Fetch(t Tile) (*pixel.PictureData, error) {
+func (Loader) Fetch(t Tile) (*pixel.PictureData, error) {
 	shards := []string{"a", "b", "c"}
 	url := fmt.Sprintf(
 		"http://%[1]s.tile.openstreetmap.org/%[2]d/%[3]d/%[4]d.png",
@@ -48,43 +48,43 @@ func (p Provider) Fetch(t Tile) (*pixel.PictureData, error) {
 	return pixel.PictureDataFromImage(img), nil
 }
 
-func (p *Provider) Prefetch(t Tile) {
+func (l *Loader) Prefetch(t Tile) {
 
 	// make sure we're not already fetching this tile
-	p.mu.Lock()
-	if p.pending[t] {
-		p.mu.Unlock()
+	l.mu.Lock()
+	if l.pending[t] {
+		l.mu.Unlock()
 		return
 	}
-	p.pending[t] = true
-	p.mu.Unlock()
+	l.pending[t] = true
+	l.mu.Unlock()
 
 	// fetch it
-	err := p.sem.Acquire(p.ctx, 1)
+	err := l.sem.Acquire(l.ctx, 1)
 	if err != nil {
 		return
 	}
-	pic, err := p.Fetch(t)
-	p.sem.Release(1)
+	pic, err := l.Fetch(t)
+	l.sem.Release(1)
 
 	// add it to the map
-	p.mu.Lock()
+	l.mu.Lock()
 	switch err {
 	case nil:
-		p.tiles[t] = pic
+		l.tiles[t] = pic
 	default:
 		log.Println(err)
-		delete(p.pending, t)
+		delete(l.pending, t)
 	}
-	p.mu.Unlock()
+	l.mu.Unlock()
 }
 
-func (p *Provider) Picture(t Tile) (*pixel.PictureData, bool) {
-	p.mu.Lock()
-	defer p.mu.Unlock()
-	if m, ok := p.tiles[t]; ok {
+func (l *Loader) Picture(t Tile) (*pixel.PictureData, bool) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	if m, ok := l.tiles[t]; ok {
 		return m, true
 	}
-	go p.Prefetch(t)
+	go l.Prefetch(t)
 	return nil, false
 }
