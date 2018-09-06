@@ -136,6 +136,8 @@ func (m *Map) FetchSync() error {
 func (m *Map) Draw(tg pixel.Target, mt pixel.Matrix) {
 	reset := pixel.IM.Moved(pixel.ZV.Sub(m.origin)).Chained(mt)
 	for _, t := range m.tiles {
-		t.Draw(tg, reset)
+		if t.Loaded {
+			t.Draw(tg, reset)
+		}
 	}
 }
