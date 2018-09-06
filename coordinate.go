@@ -15,8 +15,8 @@ type Coordinate struct {
 // Coord converts a vec into a coordinate
 func Coord(v pixel.Vec, zoom int) Coordinate {
 	size := float64(mapDimensions(zoom))
-	x := (clip(v.X, 0, size-1) / size) - 0.5
-	y := 0.5 - (clip(-v.Y, 0, size-1) / size)
+	x := (clamp(v.X, 0, size-1) / size) - 0.5
+	y := 0.5 - (clamp(-v.Y, 0, size-1) / size)
 	lat := 90 - 360*math.Atan(math.Exp(-y*2*math.Pi))/math.Pi
 	lon := 360.0 * x
 	return ClippedCoords(lat, lon)
@@ -34,8 +34,8 @@ func (c Coordinate) Vec(zoom int) pixel.Vec {
 	y := 0.5 - math.Log((1+sinLat)/(1-sinLat))/(4*math.Pi)
 	size := float64(mapDimensions(zoom))
 	return pixel.V(
-		clip(x*size+0.5, 0, size-1),
-		-clip(y*size+0.5, 0, size-1),
+		clamp(x*size+0.5, 0, size-1),
+		-clamp(y*size+0.5, 0, size-1),
 	)
 }
 
@@ -53,7 +53,7 @@ func (c Coordinate) String() string {
 // This can be used as a constructor to assert bad values will be clipped
 func ClippedCoords(lat, lon float64) Coordinate {
 	return Coordinate{
-		Lat: clip(lat, MinLat, MaxLat),
-		Lon: clip(lon, MinLon, MaxLon),
+		Lat: clamp(lat, MinLat, MaxLat),
+		Lon: clamp(lon, MinLon, MaxLon),
 	}
 }
