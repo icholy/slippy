@@ -121,11 +121,13 @@ func (m *Map) FetchAsync() {
 	}
 }
 
-// Fetch the tile imagery
-func (m *Map) Fetch() error {
-	for i := range m.tiles {
-		if err := m.tiles[i].Fetch(); err != nil {
-			return err
+// FetchSync the tile imagery
+func (m *Map) FetchSync() error {
+	for i, t := range m.tiles {
+		if !t.Loaded {
+			if err := m.tiles[i].Fetch(); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
