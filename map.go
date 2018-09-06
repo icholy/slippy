@@ -63,8 +63,12 @@ func (m *Map) Center() Coordinate {
 	return m.opts.Center
 }
 
+func (m *Map) Visible(c Coordinate) bool {
+	return m.Bounds().Contains(m.Vec(c))
+}
+
 func (m *Map) CenterVec() pixel.Vec {
-	return m.opts.Center.Vec(m.opts.Zoom)
+	return m.Center().Vec(m.Zoom())
 }
 
 func (m *Map) SetCenter(center Coordinate) {
@@ -73,20 +77,20 @@ func (m *Map) SetCenter(center Coordinate) {
 }
 
 func (m *Map) SetCenterVec(center pixel.Vec) {
-	m.opts.Center = Coord(center, m.opts.Zoom)
+	m.opts.Center = Coord(center, m.Zoom())
 	m.init()
 }
 
 // Coord returns the pixels coordinate assuming the camera is at 0,0
 // and the map was drawn with the identify matrix
 func (m *Map) Coord(v pixel.Vec) Coordinate {
-	return Coord(v.Sub(m.opts.Bounds.Min).Add(m.origin), m.opts.Zoom)
+	return Coord(v.Sub(m.Bounds().Min).Add(m.origin), m.Zoom())
 }
 
 // Vec returns the coordinate's pixel assuming the camera is at 0,0
 // and the map was drawn with the identify matrix
 func (m *Map) Vec(c Coordinate) pixel.Vec {
-	return c.Vec(m.opts.Zoom).Add(m.opts.Bounds.Min).Sub(m.origin)
+	return c.Vec(m.Zoom()).Add(m.Bounds().Min).Sub(m.origin)
 }
 
 // FetchAsync
