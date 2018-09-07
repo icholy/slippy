@@ -1,6 +1,6 @@
 # Slippy
 
-> Draw OpenStreetMap tiles in [pixel](https://github.com/faiface/pixel)
+> Draw [OpenStreetMap](https://www.openstreetmap.org) tiles in [pixel](https://github.com/faiface/pixel)
 
 ``` go
 m := slippy.New(slippy.Options{
