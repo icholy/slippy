@@ -8,5 +8,5 @@ go run main.go
 ## Controls
 
 * Arrow keys to navigate
-* + / - keys to zoom
+* `+` / `-` keys to zoom
 * Left click for placemark
