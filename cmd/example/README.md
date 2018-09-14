@@ -1,5 +1,4 @@
 # Example
----
 
 ```
 go get -d -v .
