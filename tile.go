@@ -1,6 +1,3 @@
-// Package tiles is a collection of conversion utilities to go between geo/pixel/tile/quadkey space
-// This package uses WGS84 coordinates and a mercator projection
-// There is also a TileIndex which can be used to store data in a single place and aggregate when needed
 package slippy
 
 import (
