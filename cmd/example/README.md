@@ -11,3 +11,7 @@ go run main.go
 * Arrow keys to navigate
 * `+` / `-` keys to zoom
 * Left click for placemark
+	
+## Screenshot
+
+![](example.png)
