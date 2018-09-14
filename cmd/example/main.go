@@ -1,10 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"image/color"
 	"log"
-	"math/rand"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -38,12 +35,19 @@ func run() error {
 		},
 	})
 
+	var placemarks []slippy.Coord
+
 	for !win.Closed() {
 
 		m.FetchAsync()
 
 		// draw the map
 		m.Draw(win, pixel.IM)
+
+		// draw the placemarks
+		for _, coord := range placemarks {
+			drawVec(win, m.Vec(coord))
+		}
 
 		switch {
 		case win.Pressed(pixelgl.KeyLeft):
@@ -62,9 +66,7 @@ func run() error {
 
 		// print clicked location coordinates
 		if win.Pressed(pixelgl.MouseButtonLeft) {
-			coord := m.Coord(win.MousePosition())
-			fmt.Println("Clicked", coord)
-			drawVec(win, m.Vec(coord))
+			placemarks = append(placemarks, m.Coord(win.MousePosition()))
 		}
 		win.Update()
 	}
@@ -81,14 +83,8 @@ func main() {
 
 func drawVec(t pixel.Target, v pixel.Vec) {
 	imd := imdraw.New(nil)
-	imd.Color = randColor()
+	imd.Color = colornames.Blue
 	imd.Push(v)
 	imd.Circle(5, 2)
 	imd.Draw(t)
-}
-
-func randColor() color.Color {
-	names := colornames.Names
-	name := names[rand.Intn(len(names))]
-	return colornames.Map[name]
 }
