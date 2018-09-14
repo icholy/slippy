@@ -39,6 +39,7 @@ func run() error {
 
 	for !win.Closed() {
 
+		// load tiles
 		m.FetchAsync()
 
 		// clear the screen
