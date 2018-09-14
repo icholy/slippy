@@ -41,12 +41,17 @@ func run() error {
 
 		m.FetchAsync()
 
+		// clear the screen
+		win.Clear(colornames.Black)
+
 		// draw the map
 		m.Draw(win, pixel.IM)
 
 		// draw the placemarks
 		for _, coord := range placemarks {
-			drawVec(win, m.Vec(coord))
+			if m.Visible(coord) {
+				drawVec(win, m.Vec(coord))
+			}
 		}
 
 		switch {
