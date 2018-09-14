@@ -5,7 +5,7 @@
 ``` go
 m := slippy.New(slippy.Options{
 	Zoom:   10,
-	Center: slippy.ClippedCoords(43.174366, -79.231511),
+	Center: slippy.C(43.174366, -79.231511),
 	Bounds: win.Bounds(),
 })
 
