@@ -55,6 +55,7 @@ func run() error {
 			}
 		}
 
+		// process controls
 		switch {
 		case win.Pressed(pixelgl.KeyLeft):
 			m.SetCenterVec(m.CenterVec().Sub(pixel.V(10, 0)))
@@ -68,12 +69,10 @@ func run() error {
 			m.SetZoom(m.Zoom() + 1)
 		case win.JustPressed(pixelgl.KeyMinus):
 			m.SetZoom(m.Zoom() - 1)
-		}
-
-		// print clicked location coordinates
-		if win.Pressed(pixelgl.MouseButtonLeft) {
+		case win.Pressed(pixelgl.MouseButtonLeft):
 			placemarks = append(placemarks, m.Coord(win.MousePosition()))
 		}
+
 		win.Update()
 	}
 	return nil
