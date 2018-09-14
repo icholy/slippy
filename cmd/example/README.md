@@ -1,6 +1,7 @@
 # Example
 
 ```
+go get github.com/icholy/slippy/cmd/example
 go get -d -v .
 go run main.go
 ```
