@@ -4,7 +4,7 @@ import "github.com/faiface/pixel"
 
 // Options contains configuration options for a map
 type Options struct {
-	Center Coordinate
+	Center Coord
 	Zoom   int
 	Bounds pixel.Rect
 }
@@ -70,13 +70,13 @@ func (m *Map) SetBounds(bounds pixel.Rect) {
 }
 
 // Center returns the coordinate of the center of the map
-func (m *Map) Center() Coordinate {
+func (m *Map) Center() Coord {
 	return m.opts.Center
 }
 
 // Visible checks if a coordinate is contained withing
 // the currently visible map view
-func (m *Map) Visible(c Coordinate) bool {
+func (m *Map) Visible(c Coord) bool {
 	return m.Bounds().Contains(m.Vec(c))
 }
 
@@ -87,7 +87,7 @@ func (m *Map) CenterVec() pixel.Vec {
 }
 
 // SetCenter sets the center of the map to the provided coordinate
-func (m *Map) SetCenter(center Coordinate) {
+func (m *Map) SetCenter(center Coord) {
 	m.opts.Center = center
 	m.init()
 }
@@ -95,19 +95,19 @@ func (m *Map) SetCenter(center Coordinate) {
 // SetCenterVec sets the center of the map view to
 // the coordinate which corresponds to the provided vec
 func (m *Map) SetCenterVec(center pixel.Vec) {
-	m.opts.Center = Coord(center, m.Zoom())
+	m.opts.Center = FromVec(center, m.Zoom())
 	m.init()
 }
 
 // Coord returns the pixels coordinate assuming the camera is at 0,0
 // and the map was drawn with the identify matrix
-func (m *Map) Coord(v pixel.Vec) Coordinate {
-	return Coord(v.Sub(m.Bounds().Min).Add(m.origin), m.Zoom())
+func (m *Map) Coord(v pixel.Vec) Coord {
+	return FromVec(v.Sub(m.Bounds().Min).Add(m.origin), m.Zoom())
 }
 
 // Vec returns the coordinate's pixel assuming the camera is at 0,0
 // and the map was drawn with the identify matrix
-func (m *Map) Vec(c Coordinate) pixel.Vec {
+func (m *Map) Vec(c Coord) pixel.Vec {
 	return c.Vec(m.Zoom()).Add(m.Bounds().Min).Sub(m.origin)
 }
 

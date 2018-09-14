@@ -31,7 +31,7 @@ func run() error {
 	padding := pixel.V(10, 10)
 	m := slippy.New(slippy.Options{
 		Zoom:   10,
-		Center: slippy.ClippedCoords(43.174366, -79.231511),
+		Center: slippy.C(43.174366, -79.231511),
 		Bounds: pixel.Rect{
 			Min: win.Bounds().Min.Add(padding),
 			Max: win.Bounds().Max.Sub(padding),
