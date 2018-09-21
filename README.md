@@ -1,4 +1,4 @@
-# Slippy
+# Slippy [![GoDoc](https://godoc.org/github.com/icholy/slippy?status.svg)](https://godoc.org/github.com/icholy/slippy)
 
 > Draw [OpenStreetMap](https://www.openstreetmap.org) tiles in [pixel](https://github.com/faiface/pixel)
 
