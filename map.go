@@ -143,3 +143,15 @@ func (m *Map) Draw(tg pixel.Target, mt pixel.Matrix) {
 		}
 	}
 }
+
+type Pusher interface {
+	Push(pts ...pixel.Vec)
+}
+
+// Push is a convinience method for pushing coordinates
+// into an imdraw.IMDraw
+func (m *Map) Push(p Pusher, coords ...Coord) {
+	for _, c := range coords {
+		p.Push(m.Vec(c))
+	}
+}

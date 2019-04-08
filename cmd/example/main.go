@@ -35,7 +35,7 @@ func run() error {
 		},
 	})
 
-	var placemarks []slippy.Coord
+	var line []slippy.Coord
 
 	for !win.Closed() {
 
@@ -48,12 +48,12 @@ func run() error {
 		// draw the map
 		m.Draw(win, pixel.IM)
 
-		// draw the placemarks
-		for _, coord := range placemarks {
-			if m.Visible(coord) {
-				drawVec(win, m.Vec(coord))
-			}
-		}
+		// draw the line
+		imd := imdraw.New(nil)
+		imd.Color = colornames.Red
+		m.Push(imd, line...)
+		imd.Line(2)
+		imd.Draw(win)
 
 		// process controls
 		switch {
@@ -70,7 +70,7 @@ func run() error {
 		case win.JustPressed(pixelgl.KeyMinus):
 			m.SetZoom(m.Zoom() - 1)
 		case win.Pressed(pixelgl.MouseButtonLeft):
-			placemarks = append(placemarks, m.Coord(win.MousePosition()))
+			line = append(line, m.Coord(win.MousePosition()))
 		}
 
 		win.Update()
@@ -84,12 +84,4 @@ func main() {
 			log.Fatal(err)
 		}
 	})
-}
-
-func drawVec(t pixel.Target, v pixel.Vec) {
-	imd := imdraw.New(nil)
-	imd.Color = colornames.Blue
-	imd.Push(v)
-	imd.Circle(5, 2)
-	imd.Draw(t)
 }
