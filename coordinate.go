@@ -8,9 +8,13 @@ import (
 )
 
 // Coord is a simple struct for hold WGS-84 Lat Lon coordinates in degrees
-type Coord struct {
-	Lat, Lon float64
-}
+type Coord []float64
+
+// Lon returns the longitude
+func (c Coord) Lon() float64 { return c[0] }
+
+// Lat returns the latitude
+func (c Coord) Lat() float64 { return c[1] }
 
 // FromVec converts a vec into a coordinate
 func FromVec(v pixel.Vec, zoom int) Coord {
@@ -29,8 +33,8 @@ func V(lat, lon float64, zoom int) pixel.Vec {
 
 // Vec gets the vec of the coord at the zoom level
 func (c Coord) Vec(zoom int) pixel.Vec {
-	x := (c.Lon + 180) / 360.0
-	sinLat := math.Sin(c.Lat * math.Pi / 180.0)
+	x := (c.Lon() + 180) / 360.0
+	sinLat := math.Sin(c.Lat() * math.Pi / 180.0)
 	y := 0.5 - math.Log((1+sinLat)/(1-sinLat))/(4*math.Pi)
 	size := float64(mapDimensions(zoom))
 	return pixel.V(
@@ -53,7 +57,7 @@ func (c Coord) String() string {
 // This can be used as a constructor to assert bad values will be clipped
 func C(lat, lon float64) Coord {
 	return Coord{
-		Lat: clamp(lat, MinLat, MaxLat),
-		Lon: clamp(lon, MinLon, MaxLon),
+		clamp(lon, MinLon, MaxLon),
+		clamp(lat, MinLat, MaxLat),
 	}
 }
