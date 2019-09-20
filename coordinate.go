@@ -8,7 +8,7 @@ import (
 )
 
 // Coord is a simple struct for hold WGS-84 Lat Lon coordinates in degrees
-type Coord []float64
+type Coord [2]float64
 
 // Lon returns the longitude
 func (c Coord) Lon() float64 { return c[0] }
