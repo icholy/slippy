@@ -50,7 +50,7 @@ func (c Coord) Tile(zoom int) Tile {
 
 // String returns a string representation of the coordinate
 func (c Coord) String() string {
-	return fmt.Sprintf("Coordinate(%v, %v)", c.Lat, c.Lon)
+	return fmt.Sprintf("Coordinate(%v, %v)", c.Lat(), c.Lon())
 }
 
 // C that have been clipped to Max/Min Lat/Lon
