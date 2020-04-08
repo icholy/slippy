@@ -1,4 +1,4 @@
-module github.com/icholy/github
+module github.com/icholy/slippy
 
 go 1.14
 
