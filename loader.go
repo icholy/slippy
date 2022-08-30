@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math/rand"
 	"sync"
 
 	"github.com/faiface/pixel"
@@ -31,16 +30,12 @@ func NewLoader() *Loader {
 	}
 }
 
-func (p Loader) Cancel() {
+func (p *Loader) Cancel() {
 	p.cancel()
 }
 
-func (Loader) Fetch(t Tile) (*pixel.PictureData, error) {
-	shards := []string{"a", "b", "c"}
-	url := fmt.Sprintf(
-		"http://%[1]s.tile.openstreetmap.org/%[2]d/%[3]d/%[4]d.png",
-		shards[rand.Intn(len(shards))], t.Z, t.X, t.Y,
-	)
+func (p *Loader) Fetch(t Tile) (*pixel.PictureData, error) {
+	url := fmt.Sprintf("https://tile.openstreetmap.org/%d/%d/%d.png", t.Z, t.X, t.Y)
 	img, err := FetchImage(url)
 	if err != nil {
 		return nil, err
