@@ -4,8 +4,8 @@ go 1.18
 
 require (
 	github.com/faiface/pixel v0.10.0
-	golang.org/x/image v0.0.0-20220722155232-062f8c9fd539
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
+	golang.org/x/image v0.5.0
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
 )
 
 require (
